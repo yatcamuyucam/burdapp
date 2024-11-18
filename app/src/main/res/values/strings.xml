@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">burdapp</string>
+    <string name="introTitle">Explorer the <font color="#3F95EC"> \n World</font> with us!</string>
+    <string name="subIntro">Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum </string>
+
+
 </resources>

@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "867519872025",
+    "firebase_url": "https://burd-yourjourney-default-rtdb.firebaseio.com",
+    "project_id": "burd-yourjourney",
+    "storage_bucket": "burd-yourjourney.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:867519872025:android:499551c42a700c3a197e88",
+        "android_client_info": {
+          "package_name": "com.example.brud"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEPlAN_9iL6bgNjGFqAvRrieMVPOvV_wQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:867519872025:android:16eb2315094b6dbb197e88",
+        "android_client_info": {
+          "package_name": "com.example.burdapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEPlAN_9iL6bgNjGFqAvRrieMVPOvV_wQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
