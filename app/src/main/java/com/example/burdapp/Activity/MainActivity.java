@@ -11,8 +11,10 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 
 import com.example.burdapp.Adapter.CategoryAdapter;
+import com.example.burdapp.Adapter.RecommendedAdapter;
 import com.example.burdapp.Adapter.SliderAdapter;
 import com.example.burdapp.Domain.Category;
+import com.example.burdapp.Domain.ItemDomain;
 import com.example.burdapp.Domain.Location;
 import com.example.burdapp.Domain.SliderItems;
 import com.example.burdapp.R;
@@ -38,7 +40,38 @@ public class MainActivity extends BaseActivity {
         initLocation();
         initBanner();
         initCategory();
+        initRecommended();
     }
+
+    private void initRecommended() {
+        DatabaseReference myRef = database.getReference("Popular");
+        binding.progressBarRecommended.setVisibility(View.VISIBLE);
+
+        ArrayList<ItemDomain> list = new ArrayList<>();
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for(DataSnapshot issue: snapshot.getChildren()){
+                        list.add(issue.getValue(ItemDomain.class));
+                    }
+                    if (!list.isEmpty()){
+                        binding.recyclerViewRecommended.setLayoutManager(new LinearLayoutManager(MainActivity.this,LinearLayoutManager.HORIZONTAL, false));
+                        RecyclerView.Adapter adapter = new RecommendedAdapter(list);
+                        binding.recyclerViewRecommended.setAdapter(adapter);
+                    }
+                    binding.progressBarRecommended.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Hata yönetimi burada yapılacak
+            }
+        });
+    }
+
 
     private void initCategory() {
         DatabaseReference myRef=database.getReference("Category");
