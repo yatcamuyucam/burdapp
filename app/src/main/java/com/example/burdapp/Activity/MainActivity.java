@@ -11,6 +11,7 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 
 import com.example.burdapp.Adapter.CategoryAdapter;
+import com.example.burdapp.Adapter.PopularAdapter;
 import com.example.burdapp.Adapter.RecommendedAdapter;
 import com.example.burdapp.Adapter.SliderAdapter;
 import com.example.burdapp.Domain.Category;
@@ -41,10 +42,41 @@ public class MainActivity extends BaseActivity {
         initBanner();
         initCategory();
         initRecommended();
+        initPopular();
+    }
+
+
+    private void initPopular() {
+        DatabaseReference myRef = database.getReference("Popular");
+        binding.progressBarPopular.setVisibility(View.VISIBLE);
+
+        ArrayList<ItemDomain> list = new ArrayList<>();
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for(DataSnapshot issue: snapshot.getChildren()){
+                        list.add(issue.getValue(ItemDomain.class));
+                    }
+                    if (!list.isEmpty()){
+                        binding.recyclerViewPopular.setLayoutManager(new LinearLayoutManager(MainActivity.this,LinearLayoutManager.HORIZONTAL, false));
+                        RecyclerView.Adapter adapter = new PopularAdapter(list);
+                        binding.recyclerViewPopular.setAdapter(adapter);
+                    }
+                    binding.progressBarPopular.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Hata yönetimi burada yapılacak
+            }
+        });
     }
 
     private void initRecommended() {
-        DatabaseReference myRef = database.getReference("Popular");
+        DatabaseReference myRef = database.getReference("Item");
         binding.progressBarRecommended.setVisibility(View.VISIBLE);
 
         ArrayList<ItemDomain> list = new ArrayList<>();
