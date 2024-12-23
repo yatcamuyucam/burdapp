@@ -45,11 +45,10 @@ public class DetailActivity extends BaseActivity {
                 .load(object.getPic())
                 .into(binding.pic);
 
-        binding.addToCardBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Intent intent = new Intent(DetailActivity.this, );
-            }
+        binding.addToCardBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(DetailActivity.this, TicketActivity.class);
+            intent.putExtra("object", object);
+            startActivity(intent);
         });
     }
 
