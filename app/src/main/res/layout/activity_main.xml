@@ -61,7 +61,7 @@
                 android:background="@drawable/grey_bg">
 
                 <EditText
-                    android:id="@+id/editTextText"
+                    android:id="@+id/searchBar"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:background="#00ffffff"
@@ -75,14 +75,14 @@
                     android:textColorHint="@color/darkBlue"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/textView5"
+                    app:layout_constraintEnd_toStartOf="@+id/searchBtn"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="1.0" />
 
                 <TextView
-                    android:id="@+id/textView5"
+                    android:id="@+id/searchBtn"
                     android:layout_width="85dp"
                     android:layout_height="42dp"
                     android:layout_marginTop="2dp"
@@ -262,6 +262,7 @@
     </ScrollView>
 
     <com.ismaeldivita.chipnavigation.ChipNavigationBar
+        android:id="@+id/chipNavigationBar"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:background="@color/white"
@@ -275,8 +276,7 @@
         app:cnb_unselectedColor="@color/darkBlue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
 
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

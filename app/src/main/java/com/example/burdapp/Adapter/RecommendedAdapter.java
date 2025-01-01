@@ -55,6 +55,7 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
 
     }
 
+
     @Override
     public int getItemCount() {
         return items.size();
