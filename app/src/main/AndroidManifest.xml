@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -12,39 +11,51 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Burdapp"
         tools:targetApi="31">
-        <activity
-            android:name=".Activity.ExplorerActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Activity.TicketActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Activity.DetailActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Activity.DetailActivity2"
-            android:exported="false" />
-        <activity
-            android:name=".Activity.BaseActivity"
-            android:exported="false" />
+
+        <!-- IntroActivity: Uygulamanın başlangıç noktası -->
         <activity
             android:name=".Activity.IntroActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- LoginActivity: Kullanıcı giriş ekranı -->
+        <activity
+            android:name=".Activity.LoginActivity"
+            android:exported="true" />
+
+        <!-- SignupActivity: Kullanıcı kayıt ekranı -->
+        <activity
+            android:name=".Activity.SignupActivity"
+            android:exported="true" />
+
+        <!-- MainActivity: Uygulamanın ana ekranı -->
         <activity
             android:name=".Activity.MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="true" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <!-- ExplorerActivity: Keşif ekranı -->
+        <activity
+            android:name=".Activity.ExplorerActivity"
+            android:exported="false" />
+
+        <!-- TicketActivity: Bilet ekranı -->
+        <activity
+            android:name=".Activity.TicketActivity"
+            android:exported="false" />
+
+        <!-- DetailActivity: Detay ekranı -->
+        <activity
+            android:name=".Activity.DetailActivity"
+            android:exported="false" />
+
+        <!-- BaseActivity: Tüm aktivitelerin temel sınıfı -->
+        <activity
+            android:name=".Activity.BaseActivity"
+            android:exported="false" />
+
     </application>
-
 </manifest>

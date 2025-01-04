@@ -1,8 +1,7 @@
 package com.example.burdapp.Activity;
 
-import android.os.Bundle;
-
 import android.content.Intent;
+import android.os.Bundle;
 import com.example.burdapp.databinding.ActivityIntroBinding;
 
 public class IntroActivity extends BaseActivity {
@@ -17,7 +16,8 @@ public class IntroActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         // introBtn'e tıklama olayı tanımlanıyor
-        binding.introBtn.setOnClickListener(v -> startActivity(new Intent(IntroActivity.this, MainActivity.class))
+        binding.introBtn.setOnClickListener(v ->
+                startActivity(new Intent(IntroActivity.this, SignupActivity.class))
         );
     }
 }
