@@ -48,6 +48,7 @@ public class MainActivity extends BaseActivity {
         initRecommended();
         initPopular();
 
+
         // SEE ALL tıklama işlemi
         binding.textView4.setOnClickListener(new View.OnClickListener() {
             @Override

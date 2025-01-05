@@ -9,17 +9,18 @@ import com.bumptech.glide.Glide;
 import com.example.burdapp.Domain.ItemDomain;
 import com.example.burdapp.R;
 import com.example.burdapp.databinding.ActivityDetailBinding;
+import com.google.gson.Gson;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class DetailActivity extends BaseActivity {
-    ActivityDetailBinding binding;
+    private ActivityDetailBinding binding;
     private ItemDomain object;
 
-    // Favori durumu için SharedPreferences
     private SharedPreferences sharedPreferences;
-    private boolean isFavorited = false; // Varsayılan favori durumu
+    private boolean isFavorited = false;
+    private Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,36 +31,25 @@ public class DetailActivity extends BaseActivity {
         // SharedPreferences başlatma
         sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
 
-        // Favori durumunu SharedPreferences'tan kontrol et
+        // Intent'ten gelen veriyi al ve favori durumunu kontrol et
         getIntentExtra();
-        checkFavoriteStatus(); // Favori durumunu kontrol et ve güncelle
+        checkFavoriteStatus();
 
-        // Değişkenleri ayarla
+        // Görsel ve işlevsel öğeleri ayarla
         setVariable();
 
-        // Favori simgesine tıklama dinleyicisi ekleme
+        // Favori butonuna tıklama işlemi
         binding.favBtn.setOnClickListener(v -> toggleFavorite());
     }
 
-    /**
-     * Favori durumunu kontrol et ve simgeyi güncelle
-     */
-    private void checkFavoriteStatus() {
-        // SharedPreferences'tan favoriler listesini al
-        Set<String> favorites = sharedPreferences.getStringSet("favorites", new HashSet<>());
-
-        // Favorilerde olup olmadığını kontrol et
-        isFavorited = favorites.contains(object.getTitle());
-
-        // Favori ikonunu güncelle
-        updateFavIcon();
+    private void getIntentExtra() {
+        object = (ItemDomain) getIntent().getSerializableExtra("object");
     }
 
     private void setVariable() {
         binding.titleTxt.setText(object.getTitle());
         binding.priceTxt.setText("$" + object.getPrice());
-        binding.backBtn.setOnClickListener(v -> finish());
-        binding.bedTxt.setText("" + object.getBed());
+        binding.bedTxt.setText(String.valueOf(object.getBed()));
         binding.durationTxt.setText(object.getDuration());
         binding.distanceTxt.setText(object.getDistance());
         binding.descriptionTxt.setText(object.getDescription());
@@ -67,10 +57,9 @@ public class DetailActivity extends BaseActivity {
         binding.ratingTxt.setText(object.getScore() + " Rating");
         binding.ratingBar.setRating((float) object.getScore());
 
-        Glide.with(DetailActivity.this)
-                .load(object.getPic())
-                .into(binding.pic);
+        Glide.with(this).load(object.getPic()).into(binding.pic);
 
+        binding.backBtn.setOnClickListener(v -> finish());
         binding.addToCardBtn.setOnClickListener(v -> {
             Intent intent = new Intent(DetailActivity.this, TicketActivity.class);
             intent.putExtra("object", object);
@@ -78,48 +67,73 @@ public class DetailActivity extends BaseActivity {
         });
     }
 
-    private void getIntentExtra() {
-        object = (ItemDomain) getIntent().getSerializableExtra("object");
+    /**
+     * Favori durumunu kontrol eder ve simgeyi günceller.
+     */
+    private void checkFavoriteStatus() {
+        Set<String> favorites = sharedPreferences.getStringSet("favorites", new HashSet<>());
+        if (favorites != null) {
+            for (String itemJson : favorites) {
+                try {
+                    ItemDomain item = gson.fromJson(itemJson, ItemDomain.class);
+                    if (item.getTitle().equals(object.getTitle())) {
+                        isFavorited = true;
+                        break;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        updateFavIcon();
     }
 
     /**
-     * Favori durumunu değiştirme ve kaydetme
+     * Favori durumunu değiştirir ve SharedPreferences'a kaydeder.
      */
     private void toggleFavorite() {
         isFavorited = !isFavorited;
-
-        // Favori durumunu SharedPreferences'ta güncelle
+        Set<String> favorites = new HashSet<>(sharedPreferences.getStringSet("favorites", new HashSet<>()));
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        Set<String> favorites = sharedPreferences.getStringSet("favorites", new HashSet<>());
 
         if (isFavorited) {
-            // İçeriği favorilere ekle
-            favorites.add(object.getTitle());
+            String itemJson = gson.toJson(object);
+            favorites.add(itemJson);
         } else {
-            // İçeriği favorilerden çıkar
-            favorites.remove(object.getTitle());
+            String toRemove = null;
+            for (String itemJson : favorites) {
+                try {
+                    ItemDomain item = gson.fromJson(itemJson, ItemDomain.class);
+                    if (item.getTitle().equals(object.getTitle())) {
+                        toRemove = itemJson;
+                        break;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (toRemove != null) {
+                favorites.remove(toRemove);
+            }
         }
 
-        // Güncellenen favorileri kaydet
+        Intent intent = new Intent("com.example.UPDATE_FAVORITES");
+        sendBroadcast(intent);
+
         editor.putStringSet("favorites", favorites);
         editor.apply();
 
-        // Simgeyi güncelle
         updateFavIcon();
 
-        // Kullanıcıya bildirim göster
         String message = isFavorited ? "Added to favorites" : "Removed from favorites";
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     /**
-     * Favori simgesini güncelle
+     * Favori simgesini günceller.
      */
     private void updateFavIcon() {
-        if (isFavorited) {
-            binding.favBtn.setImageResource(R.drawable.red_fav_icon); // Dolmuş favori simgesi
-        } else {
-            binding.favBtn.setImageResource(R.drawable.fav_icon); // Boş favori simgesi
-        }
+        int icon = isFavorited ? R.drawable.red_fav_icon : R.drawable.fav_icon;
+        binding.favBtn.setImageResource(icon);
     }
 }

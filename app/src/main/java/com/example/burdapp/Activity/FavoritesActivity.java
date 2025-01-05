@@ -1,8 +1,12 @@
 package com.example.burdapp.Activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -11,25 +15,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.burdapp.Adapter.ItemAdapter;
+import com.example.burdapp.Adapter.ExplorerAdapter;
 import com.example.burdapp.Domain.ItemDomain;
 import com.example.burdapp.R;
+import com.google.gson.Gson;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-public class FavoritesActivity extends BaseActivity {
+public class FavoritesActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private TextView emptyMessage;
-    private ItemAdapter adapter;
-    private List<ItemDomain> favoriteItems;
+    private ExplorerAdapter adapter;
+    private ArrayList<ItemDomain> favoriteItems; // Tip ArrayList olarak düzenlendi
     private SharedPreferences sharedPreferences;
     private ChipNavigationBar chipNavigationBar;
+    private BroadcastReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,59 +47,66 @@ public class FavoritesActivity extends BaseActivity {
         emptyMessage = findViewById(R.id.emptyMessage);
         chipNavigationBar = findViewById(R.id.chipNavigationBar);
 
-        // RecyclerView için düzenleyici ayarla
+        // RecyclerView ve Adapter'i ayarla
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        favoriteItems = new ArrayList<>();
+        adapter = new ExplorerAdapter(favoriteItems);
+        recyclerView.setAdapter(adapter);
 
-        // Favori içerikleri yükle
+        // Favorileri yükle
         loadFavoriteItems();
 
-        // ChipNavigationBar'ı ayarla
+        // Navigasyon barını ayarla
         setupNavigationBar();
+
+        // BroadcastReceiver tanımla ve kaydet
+        setupBroadcastReceiver();
     }
 
     private void loadFavoriteItems() {
-        // ProgressBar'ı göster
         progressBar.setVisibility(View.VISIBLE);
 
-        // SharedPreferences'tan favorileri yükle
+        // SharedPreferences'tan favori verilerini al
         sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         Set<String> favorites = sharedPreferences.getStringSet("favorites", new HashSet<>());
 
-        // Favori içerikleri listeye dönüştür
-        favoriteItems = getFavoriteItems(favorites);
-
-        // Favori içerik yoksa boş mesajı göster, RecyclerView'i gizle
-        if (favoriteItems.isEmpty()) {
-            progressBar.setVisibility(View.GONE);
-            emptyMessage.setVisibility(View.VISIBLE); // Boş mesajı göster
-            recyclerView.setVisibility(View.GONE); // RecyclerView'i gizle
+        // Eğer favoriler boşsa mesaj göster ve işlemi durdur
+        if (favorites == null || favorites.isEmpty()) {
+            showEmptyState();
             return;
         }
 
-        // Adapter'i RecyclerView'e bağla
-        adapter = new ItemAdapter(favoriteItems);
-        recyclerView.setAdapter(adapter);
+        Gson gson = new Gson();
+        favoriteItems.clear();
 
-        // Mesajı gizle ve RecyclerView'i göster
-        emptyMessage.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
+        for (String itemJson : favorites) {
+            try {
+                // JSON formatını ItemDomain nesnesine dönüştür
+                ItemDomain item = gson.fromJson(itemJson, ItemDomain.class);
+                favoriteItems.add(item);
+            } catch (Exception e) {
+                // JSON hatalarını logla
+                e.printStackTrace();
+                Log.e("FavoritesActivity", "JSON dönüşüm hatası: " + e.getMessage());
+            }
+        }
 
-        // ProgressBar'ı gizle
+        if (favoriteItems.isEmpty()) {
+            showEmptyState();
+        } else {
+            emptyMessage.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
+
+        adapter.notifyDataSetChanged();
         progressBar.setVisibility(View.GONE);
     }
 
-    private List<ItemDomain> getFavoriteItems(Set<String> favorites) {
-        List<ItemDomain> items = new ArrayList<>();
-
-        for (String title : favorites) {
-            ItemDomain item = new ItemDomain();
-            item.setTitle(title); // Başlığı ayarla
-            item.setDescription("Description for " + title); // Örnek açıklama
-            item.setPic("image_url"); // Örnek resim URL'si
-            items.add(item);
-        }
-
-        return items;
+    private void showEmptyState() {
+        emptyMessage.setVisibility(View.VISIBLE);
+        emptyMessage.setText("You don't have any favorites yet. Start exploring and add items to your favorites!");
+        recyclerView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
     }
 
     private void setupNavigationBar() {
@@ -109,9 +121,38 @@ public class FavoritesActivity extends BaseActivity {
                 Intent explorerIntent = new Intent(FavoritesActivity.this, ExplorerActivity.class);
                 startActivity(explorerIntent);
                 finish();
-            } else if (id == R.id.bookmark) {
-                // Zaten FavoritesActivity'deyiz
             }
         });
+    }
+
+    private void setupBroadcastReceiver() {
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if ("com.example.UPDATE_FAVORITES".equals(intent.getAction())) {
+                    loadFavoriteItems(); // Favorileri yeniden yükle
+                }
+            }
+        };
+
+        // IntentFilter oluştur ve register işlemini yap
+        IntentFilter filter = new IntentFilter("com.example.UPDATE_FAVORITES");
+        registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED); // Flag eklenmiş
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+        }
+    }
+
+    /**
+     * Test veya hata ayıklama sırasında kullanılabilecek bir yöntem:
+     * Favori verilerini temizler.
+     */
+    private void clearFavorites() {
+        sharedPreferences.edit().clear().apply();
     }
 }
