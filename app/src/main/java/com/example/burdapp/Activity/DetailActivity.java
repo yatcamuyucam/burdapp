@@ -13,10 +13,17 @@ import com.google.gson.Gson;
 
 import java.util.HashSet;
 import java.util.Set;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class DetailActivity extends BaseActivity {
     private ActivityDetailBinding binding;
     private ItemDomain object;
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
     private SharedPreferences sharedPreferences;
     private boolean isFavorited = false;
@@ -27,6 +34,8 @@ public class DetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = auth.getCurrentUser();
 
         // SharedPreferences başlatma
         sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
@@ -36,17 +45,13 @@ public class DetailActivity extends BaseActivity {
         checkFavoriteStatus();
 
         // Görsel ve işlevsel öğeleri ayarla
-        setVariable();
+        setVariable(currentUser);
 
         // Favori butonuna tıklama işlemi
         binding.favBtn.setOnClickListener(v -> toggleFavorite());
     }
 
-    private void getIntentExtra() {
-        object = (ItemDomain) getIntent().getSerializableExtra("object");
-    }
-
-    private void setVariable() {
+    private void setVariable(FirebaseUser currentUser) {
         binding.titleTxt.setText(object.getTitle());
         binding.priceTxt.setText("$" + object.getPrice());
         binding.bedTxt.setText(String.valueOf(object.getBed()));
@@ -61,12 +66,35 @@ public class DetailActivity extends BaseActivity {
 
         binding.backBtn.setOnClickListener(v -> finish());
         binding.addToCardBtn.setOnClickListener(v -> {
+            saveItemToCart(object, currentUser);
+
             Intent intent = new Intent(DetailActivity.this, TicketActivity.class);
             intent.putExtra("object", object);
             startActivity(intent);
         });
     }
+    private void saveItemToCart(ItemDomain item, FirebaseUser currentUser) {
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        ItemDomain selectedTicket = new ItemDomain();
+        selectedTicket.setTitle(item.getTitle());
+        selectedTicket.setPic(item.getPic());
+        selectedTicket.setPrice(100);
+        selectedTicket.setUserId(currentUser.getUid());
+        selectedTicket.setAddress(item.getAddress());
+        selectedTicket.setDescription(item.getDescription());
+        selectedTicket.setDuration(item.getDuration());
+        selectedTicket.setDateTour(item.getDateTour());
+        selectedTicket.setTimeTour(item.getTimeTour());
+        selectedTicket.setTourGuideName(item.getTourGuideName());
+        selectedTicket.setTourGuidePhone(item.getTourGuidePhone());
+        selectedTicket.setTourGuidePic(item.getTourGuidePic());
+        selectedTicket.setScore(item.getScore());
+        selectedTicket.setBed(item.getBed());
+        selectedTicket.setDistance(item.getDistance());
 
+        database.child("userTickets").child(currentUser.getUid()).push().setValue(selectedTicket);
+
+    }
     /**
      * Favori durumunu kontrol eder ve simgeyi günceller.
      */
@@ -135,5 +163,9 @@ public class DetailActivity extends BaseActivity {
     private void updateFavIcon() {
         int icon = isFavorited ? R.drawable.red_fav_icon : R.drawable.fav_icon;
         binding.favBtn.setImageResource(icon);
+
+    }
+    private void getIntentExtra() {
+        object = (ItemDomain) getIntent().getSerializableExtra("object");
     }
 }

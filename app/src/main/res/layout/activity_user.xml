@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/blue"
+    tools:context=".Activity.UserActivity">
+
+    <!-- AppBar Layout -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_height="0dp" android:layout_width="0dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:title="User Profile"
+            android:background="@color/blue"
+            app:titleCentered="true" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Main Content -->
+    <ScrollView
+        android:id="@+id/scrollView3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="@drawable/top_corner_bg"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Profile Section -->
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/photoImageView"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="4dp"
+                    android:contentDescription="Sign Out"
+                    android:onClick="onImageClick"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.977"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/logout" />
+
+                <ImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:background="@drawable/avatar"
+                    android:contentDescription="avatar"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/photoImageView" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <TextView
+                android:id="@+id/nameTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/grey_bg"
+                android:gravity="center"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:text="Name Surname"
+                android:textColor="@color/darkBlue"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/emailTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/grey_bg"
+                android:gravity="center"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:text="Mail"
+                android:textColor="@color/darkBlue"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <!-- Participated Places Section -->
+            <TextView
+                android:id="@+id/participatedHeaderTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/stroke_corner"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Attended Tours"
+                android:textColor="@color/darkBlue"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewRecommended"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </LinearLayout>
+    </ScrollView>
+
+    <com.ismaeldivita.chipnavigation.ChipNavigationBar
+        android:id="@+id/chipNavigationBar"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_gravity="bottom"
+        android:background="@color/white"
+        android:elevation="3dp"
+        android:padding="4dp"
+        app:cnb_iconColor="@color/darkBlue"
+        app:cnb_iconSize="20sp"
+        app:cnb_menuResource="@menu/menu_bottom"
+        app:cnb_orientationMode="horizontal"
+        app:cnb_radius="50dp"
+        app:cnb_unselectedColor="@color/darkBlue"
+        app:layout_anchor="@+id/scrollView3"
+        app:layout_anchorGravity="bottom" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

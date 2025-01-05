@@ -12,6 +12,15 @@ public class ItemDomain implements Serializable {
     private String dateTour;
     private String tourGuideName;
     private String tourGuidePhone;
+    private String userId;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getTitle() {
         return title;

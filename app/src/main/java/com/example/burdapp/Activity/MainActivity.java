@@ -89,6 +89,11 @@ public class MainActivity extends BaseActivity {
                 // Favoriler sayfasına (FavoritesActivity) yönlendir
                 Intent favoritesIntent = new Intent(MainActivity.this, FavoritesActivity.class);
                 startActivity(favoritesIntent);
+                finish();
+            } else if (id == R.id.profile) {
+                Intent UserIntent = new Intent(MainActivity.this, UserActivity.class);
+                startActivity(UserIntent);
+                finish();
             } else {
                 // Diğer butonlar için işlem henüz yapılmayacak
             }

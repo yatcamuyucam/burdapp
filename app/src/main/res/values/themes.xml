@@ -6,10 +6,10 @@
     </style>
 
     <style name="Theme.Burdapp" parent="Base.Theme.Burdapp" />
-    
-    
+
+
     <style name="ShapeAppearanceOverlay.Material3.Button.App.circleImageView" parent="">
-        
+
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">20dp</item>
     </style>

@@ -21,7 +21,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText loginEmail, loginPassword;
     Button loginButton;
     TextView signupRedirectText;
-    FirebaseAuth auth;  // Firebase Authentication nesnesi
+    FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,6 @@ public class LoginActivity extends AppCompatActivity {
         signupRedirectText = findViewById(R.id.signupRedirectText);
         loginButton = findViewById(R.id.login_button);
 
-        // Firebase Authentication başlatma
         auth = FirebaseAuth.getInstance();
 
         loginButton.setOnClickListener(new View.OnClickListener() {

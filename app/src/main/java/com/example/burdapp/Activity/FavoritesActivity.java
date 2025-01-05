@@ -121,6 +121,10 @@ public class FavoritesActivity extends AppCompatActivity {
                 Intent explorerIntent = new Intent(FavoritesActivity.this, ExplorerActivity.class);
                 startActivity(explorerIntent);
                 finish();
+            }else if (id == R.id.profile) {
+                Intent explorerIntent = new Intent(FavoritesActivity.this, UserActivity.class);
+                startActivity(explorerIntent);
+                finish();
             }
         });
     }

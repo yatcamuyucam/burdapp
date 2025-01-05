@@ -42,6 +42,10 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.firebase.database)
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -51,5 +55,5 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:22.1.1") // Firebase Authentication bağımlılığı
 
     // Gson bağımlılığı eklendi
-    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("com.google.code.gson:gson:2.10.1")
 }

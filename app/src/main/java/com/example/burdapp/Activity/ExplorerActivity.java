@@ -91,13 +91,21 @@ public class ExplorerActivity extends BaseActivity {
                 homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(homeIntent);
                 finish(); // ExplorerActivity'yi kapat
-            } else if (id == R.id.explorer) {
+            }
+            else if (id == R.id.explorer) {
                 // Zaten Explorer sayfasındayız, bir işlem yapmaya gerek yok
-            } else if (id == R.id.bookmark) {
+            }
+            else if (id == R.id.bookmark) {
                 // FavoritesActivity'yi başlat
                 Intent favoritesIntent = new Intent(ExplorerActivity.this, FavoritesActivity.class);
                 startActivity(favoritesIntent);
-            } else {
+            }
+            else if (id == R.id.profile) {
+                Intent profile = new Intent(ExplorerActivity.this, UserActivity.class);
+                startActivity(profile);
+                finish();
+            }
+            else {
                 // Diğer butonlar için henüz işlem yapılmıyor
             }
         });
