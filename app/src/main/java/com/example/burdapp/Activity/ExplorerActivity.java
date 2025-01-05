@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.burdapp.Adapter.ExplorerAdapter;
 import com.example.burdapp.Domain.ItemDomain;
+import com.example.burdapp.Domain.Location;
 import com.example.burdapp.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,11 +33,17 @@ public class ExplorerActivity extends BaseActivity {
     ExplorerAdapter explorerAdapter;
     DatabaseReference itemReference, popularReference;
     ProgressBar progressBarExplorer;
+    Spinner locationSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explorer);
+
+        // Spinner tanımlaması
+        locationSpinner = findViewById(R.id.locationSp);
+
+        initLocation();
 
         // RecyclerView ve ProgressBar Tanımlamaları
         recyclerViewExplorer = findViewById(R.id.recyclerViewExplorer);
@@ -76,6 +86,34 @@ public class ExplorerActivity extends BaseActivity {
                 finish(); // ExplorerActivity'yi kapat
             } else if (id == R.id.explorer) {
                 // Zaten Explorer sayfasındayız, bir işlem yapmaya gerek yok
+            }
+        });
+    }
+
+    private void initLocation() {
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("Location");
+        ArrayList<Location> list = new ArrayList<>();
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot issue : snapshot.getChildren()) {
+                        list.add(issue.getValue(Location.class));
+                    }
+                }
+                ArrayAdapter<Location> adapter = new ArrayAdapter<>(
+                        ExplorerActivity.this,
+                        android.R.layout.simple_spinner_dropdown_item,
+                        list
+                );
+                locationSpinner.setAdapter(adapter); // Spinner'ı adapter ile bağladık
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ExplorerActivity.this, "Lokasyonlar yüklenemedi.", Toast.LENGTH_SHORT).show();
+                Log.e("FirebaseError", "Hata: " + error.getMessage());
             }
         });
     }

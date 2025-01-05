@@ -1,23 +1,25 @@
 package com.example.burdapp.Activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
-
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.burdapp.Domain.ItemDomain;
 import com.example.burdapp.R;
 import com.example.burdapp.databinding.ActivityDetailBinding;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class DetailActivity extends BaseActivity {
     ActivityDetailBinding binding;
     private ItemDomain object;
+
+    // Favori durumu için SharedPreferences
+    private SharedPreferences sharedPreferences;
+    private boolean isFavorited = false; // Varsayılan favori durumu
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +27,32 @@ public class DetailActivity extends BaseActivity {
         binding = ActivityDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // SharedPreferences başlatma
+        sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+
+        // Favori durumunu SharedPreferences'tan kontrol et
         getIntentExtra();
+        checkFavoriteStatus(); // Favori durumunu kontrol et ve güncelle
+
+        // Değişkenleri ayarla
         setVariable();
+
+        // Favori simgesine tıklama dinleyicisi ekleme
+        binding.favBtn.setOnClickListener(v -> toggleFavorite());
+    }
+
+    /**
+     * Favori durumunu kontrol et ve simgeyi güncelle
+     */
+    private void checkFavoriteStatus() {
+        // SharedPreferences'tan favoriler listesini al
+        Set<String> favorites = sharedPreferences.getStringSet("favorites", new HashSet<>());
+
+        // Favorilerde olup olmadığını kontrol et
+        isFavorited = favorites.contains(object.getTitle());
+
+        // Favori ikonunu güncelle
+        updateFavIcon();
     }
 
     private void setVariable() {
@@ -54,5 +80,46 @@ public class DetailActivity extends BaseActivity {
 
     private void getIntentExtra() {
         object = (ItemDomain) getIntent().getSerializableExtra("object");
+    }
+
+    /**
+     * Favori durumunu değiştirme ve kaydetme
+     */
+    private void toggleFavorite() {
+        isFavorited = !isFavorited;
+
+        // Favori durumunu SharedPreferences'ta güncelle
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Set<String> favorites = sharedPreferences.getStringSet("favorites", new HashSet<>());
+
+        if (isFavorited) {
+            // İçeriği favorilere ekle
+            favorites.add(object.getTitle());
+        } else {
+            // İçeriği favorilerden çıkar
+            favorites.remove(object.getTitle());
+        }
+
+        // Güncellenen favorileri kaydet
+        editor.putStringSet("favorites", favorites);
+        editor.apply();
+
+        // Simgeyi güncelle
+        updateFavIcon();
+
+        // Kullanıcıya bildirim göster
+        String message = isFavorited ? "Added to favorites" : "Removed from favorites";
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Favori simgesini güncelle
+     */
+    private void updateFavIcon() {
+        if (isFavorited) {
+            binding.favBtn.setImageResource(R.drawable.red_fav_icon); // Dolmuş favori simgesi
+        } else {
+            binding.favBtn.setImageResource(R.drawable.fav_icon); // Boş favori simgesi
+        }
     }
 }

@@ -80,16 +80,20 @@ public class MainActivity extends BaseActivity {
         chipNavigationBar.setOnItemSelectedListener(id -> {
             if (id == R.id.home) {
                 // Ana sayfadayız, işlem yapmaya gerek yok
-                // Ancak bu satır, Home yazısının seçili kalmasını sağlar
             } else if (id == R.id.explorer) {
                 // ExplorerActivity'yi başlat
                 Intent explorerIntent = new Intent(MainActivity.this, ExplorerActivity.class);
                 startActivity(explorerIntent);
+            } else if (id == R.id.bookmark) {
+                // Favoriler sayfasına (FavoritesActivity) yönlendir
+                Intent favoritesIntent = new Intent(MainActivity.this, FavoritesActivity.class);
+                startActivity(favoritesIntent);
             } else {
                 // Diğer butonlar için işlem henüz yapılmayacak
             }
         });
     }
+
 
 
 
