@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +29,11 @@ public class TicketActivity extends BaseActivity {
 
         getIntentExtra();
         setVariable();
+
+        // "Add Your Profile" butonu için tıklama olayı
+        binding.button.setOnClickListener(v -> {
+            Toast.makeText(TicketActivity.this, "Added Succesfully!", Toast.LENGTH_SHORT).show();
+        });
     }
 
     private void setVariable() {

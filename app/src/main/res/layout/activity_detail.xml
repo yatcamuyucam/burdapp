@@ -334,7 +334,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
             android:background="@drawable/blue_bg"
-            android:text="Add to card"
+            android:text="Register"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
