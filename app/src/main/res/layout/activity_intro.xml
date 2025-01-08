@@ -10,30 +10,35 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="#E1E4E7">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
+            <!-- ImageView için düzenleme -->
             <ImageView
                 android:id="@+id/introBtn"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="centerCrop"
-                app:srcCompat="@drawable/burd" />
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/burd1" />
 
+            <!-- Başlık -->
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/introTitle"
-                android:textSize="43sp"
-                android:textStyle="bold"
+                android:textAlignment="center"
                 android:textColor="@color/darkBlue"
-                android:textAlignment="center"/>
+                android:textSize="38sp"
+                android:textStyle="bold" />
 
+            <!-- Alt Başlık -->
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="match_parent"
@@ -41,8 +46,9 @@
                 android:text="@string/subIntro"
                 android:textColor="@color/darkBlue"
                 android:textAlignment="center"
+                android:textStyle="italic"
                 android:textSize="15sp"
-                android:layout_marginTop="13sp"/>
+                android:layout_marginTop="20sp" />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

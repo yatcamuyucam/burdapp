@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">burdapp</string>
-    <string name="introTitle">Explorer the <font color="#3F95EC"> \n World</font> with us!</string>
-    <string name="subIntro">Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum </string>
+    <string name="app_name">Burd Travel</string>
+    <string name="introTitle">Let’s Make Your <font color="#3F95EC">\n Journey</font> Unforgettable!</string>
+    <string name="subIntro">Your journey begins here. Explore, plan, and experience the world! </string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>

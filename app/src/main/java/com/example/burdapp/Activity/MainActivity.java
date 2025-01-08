@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -64,6 +66,12 @@ public class MainActivity extends BaseActivity {
                 Intent intent = new Intent(MainActivity.this, ExplorerActivity.class);
                 startActivity(intent);
             }
+        });
+        ImageView bellBtn = findViewById(R.id.bellBtn);
+
+        // Tıklama olayını tanımlayın
+        bellBtn.setOnClickListener(v -> {
+            Toast.makeText(this, "You have no notifications yet!", Toast.LENGTH_LONG).show();
         });
     }
 

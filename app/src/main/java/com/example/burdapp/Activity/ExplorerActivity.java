@@ -36,10 +36,16 @@ public class ExplorerActivity extends BaseActivity {
     private Spinner locationSpinner;
     private ChipNavigationBar chipNavigationBar;
 
+    // Nereden geldiği bilgisini tutmak için bir değişken
+    private String previousActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explorer);
+
+        // Intent'ten önceki aktivite bilgisini al
+        previousActivity = getIntent().getStringExtra("previousActivity");
 
         // Bileşenleri tanımla
         initViews();
@@ -57,7 +63,7 @@ public class ExplorerActivity extends BaseActivity {
         setupNavigationBar();
 
         // Geri butonu için işlem
-        findViewById(R.id.backBtn).setOnClickListener(v -> finish());
+        findViewById(R.id.backBtn).setOnClickListener(v -> handleBackButton());
     }
 
     private void initViews() {
@@ -76,44 +82,50 @@ public class ExplorerActivity extends BaseActivity {
         recyclerViewExplorer.setAdapter(explorerAdapter);
     }
 
-    private void setupNavigationBar() {
-        // ChipNavigationBar bileşenini tanımlayın
-        ChipNavigationBar chipNavigationBar = findViewById(R.id.chipNavigationBar);
+    private void handleBackButton() {
+        // Hangi sayfadan gelindiğine göre geri dön
+        if ("MainActivity".equals(previousActivity)) {
+            Intent intent = new Intent(ExplorerActivity.this, MainActivity.class);
+            startActivity(intent);
+        } else if ("FavoritesActivity".equals(previousActivity)) {
+            Intent intent = new Intent(ExplorerActivity.this, FavoritesActivity.class);
+            startActivity(intent);
+        } else if ("UserActivity".equals(previousActivity)) {
+            Intent intent = new Intent(ExplorerActivity.this, UserActivity.class);
+            startActivity(intent);
+        } else {
+            // Varsayılan olarak ana ekrana dön
+            Intent intent = new Intent(ExplorerActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
+        finish(); // Bu aktiviteyi kapat
+    }
 
-        // Varsayılan olarak 'explorer' butonunu seçili yapmak
+    private void setupNavigationBar() {
         chipNavigationBar.setItemSelected(R.id.explorer, true);
 
-        // Navigation bar için tıklama işlemleri
         chipNavigationBar.setOnItemSelectedListener(id -> {
             if (id == R.id.home) {
-                // HomeActivity'yi başlat
                 Intent homeIntent = new Intent(ExplorerActivity.this, MainActivity.class);
-                homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(homeIntent);
-                finish(); // ExplorerActivity'yi kapat
-            }
-            else if (id == R.id.explorer) {
-                // Zaten Explorer sayfasındayız, bir işlem yapmaya gerek yok
-            }
-            else if (id == R.id.bookmark) {
-                // FavoritesActivity'yi başlat
-                Intent favoritesIntent = new Intent(ExplorerActivity.this, FavoritesActivity.class);
-                startActivity(favoritesIntent);
-            }
-            else if (id == R.id.profile) {
-                Intent profile = new Intent(ExplorerActivity.this, UserActivity.class);
-                startActivity(profile);
                 finish();
-            }
-            else {
-                // Diğer butonlar için henüz işlem yapılmıyor
+            } else if (id == R.id.explorer) {
+                // Zaten Explorer sayfasındayız
+            } else if (id == R.id.bookmark) {
+                Intent favoritesIntent = new Intent(ExplorerActivity.this, FavoritesActivity.class);
+                favoritesIntent.putExtra("previousActivity", "ExplorerActivity");
+                startActivity(favoritesIntent);
+                finish();
+            } else if (id == R.id.profile) {
+                Intent profileIntent = new Intent(ExplorerActivity.this, UserActivity.class);
+                profileIntent.putExtra("previousActivity", "ExplorerActivity");
+                startActivity(profileIntent);
+                finish();
             }
         });
     }
 
-
     private void initLocation() {
-        // Firebase'den lokasyon verilerini çek
         DatabaseReference locationRef = FirebaseDatabase.getInstance().getReference("Location");
         ArrayList<Location> locationList = new ArrayList<>();
 
@@ -151,7 +163,6 @@ public class ExplorerActivity extends BaseActivity {
         itemReference = FirebaseDatabase.getInstance().getReference("Item");
         popularReference = FirebaseDatabase.getInstance().getReference("Popular");
 
-        // Firebase'den "Item" verilerini yükle
         itemReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -164,7 +175,6 @@ public class ExplorerActivity extends BaseActivity {
                     }
                 }
 
-                // Firebase'den "Popular" verilerini yükle
                 popularReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -200,7 +210,6 @@ public class ExplorerActivity extends BaseActivity {
     }
 
     private void showToast(String message) {
-        // Kullanıcıya mesaj göster
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

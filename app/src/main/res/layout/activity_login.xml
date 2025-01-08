@@ -42,7 +42,7 @@
                 android:background="@color/white"
                 android:drawableLeft="@drawable/iconmail"
                 android:drawablePadding="8dp"
-                android:hint="Email"
+                android:hint="E-mail"
                 android:padding="8dp"
                 android:textColor="@color/black" />
 

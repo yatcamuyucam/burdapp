@@ -33,20 +33,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Location"
+            android:textStyle="italic"
+            android:textColor="@color/blue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            app:srcCompat="@drawable/fav_icon" />
 
         <Spinner
             android:id="@+id/locationSp"
@@ -110,7 +101,7 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Explore the travels"
+        android:text="Where will your next adventure take you?"
         android:textColor="@color/darkBlue"
         android:textSize="16sp"
         android:textStyle="bold"
