@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.burdapp.Adapter.JoinAdapter;
-import com.example.burdapp.Adapter.PopularAdapter;
 import com.example.burdapp.Domain.ItemDomain;
 import com.example.burdapp.Domain.User;
 import com.example.burdapp.R;
@@ -25,6 +24,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
+import com.bumptech.glide.Glide;
+
 
 import java.util.ArrayList;
 
@@ -56,12 +57,41 @@ public class UserActivity extends BaseActivity {
             userReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    String name = snapshot.child("name").getValue(String.class);
                     User userName = snapshot.getValue(User.class);
                     assert userName != null;
+
+
                     String fullName = userName.getName();
+                    String gender = userName.getGender();
+
                     binding.emailTxt.setText(user.getEmail());
                     binding.nameTxt.setText(fullName);
+
+                    DatabaseReference avatar = FirebaseDatabase.getInstance().getReference("avatar");
+                    avatar.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot avatarSnapshot) {
+                            if (avatarSnapshot.exists()) {
+                                User avatarData = avatarSnapshot.getValue(User.class);
+                                if (avatarData != null) {
+                                    String avatarUrl = gender.equals("male") ? avatarData.getMale() : avatarData.getFemale();
+
+                                    Glide.with(binding.getRoot().getContext())
+                                            .load(avatarUrl)
+                                            .into(binding.profileImage);
+                                } else {
+                                    Log.e("FirebaseError", "Avatar is null");
+                                }
+                            } else {
+                                Log.e("FirebaseError", "Avatar URL does not find");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Log.e("FirebaseError", "Avatar loading error: " + error.getMessage());
+                        }
+                    });
                 }
 
                 @Override

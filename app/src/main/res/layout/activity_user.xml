@@ -57,7 +57,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/logout" />
 
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/profileImage"
                     android:layout_width="150dp"
                     android:layout_height="150dp"

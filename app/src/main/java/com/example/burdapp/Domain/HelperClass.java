@@ -1,26 +1,20 @@
-package com.example.burdapp.Activity;
+package com.example.burdapp.Domain;
 
 public class HelperClass {
 
     // Alanları private yapıyoruz
-    private String name, email, password;
+    private String name, email, password, gender;
 
     // Boş Constructor (Firebase için gereklidir)
     public HelperClass() {
     }
 
-    // Tüm parametreleri alan Constructor
-    public HelperClass(String name, String email, String username, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-    }
-
     // username olmadan kullanılan Constructor
-    public HelperClass(String name, String email, String password) {
+    public HelperClass(String name, String email, String password, String gender) {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.gender = gender;
     }
 
     // Getter ve Setter metotları
@@ -46,5 +40,13 @@ public class HelperClass {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }
