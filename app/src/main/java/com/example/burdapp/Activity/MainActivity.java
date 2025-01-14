@@ -71,7 +71,7 @@ public class MainActivity extends BaseActivity {
 
         // Tıklama olayını tanımlayın
         bellBtn.setOnClickListener(v -> {
-            Toast.makeText(this, "You have no notifications yet!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "\uD83E\uDD37\u200D♂\uFE0F No notifications yet! \uD83D\uDCED Check back later for updates! \uD83C\uDF1F", Toast.LENGTH_LONG).show();
         });
     }
 

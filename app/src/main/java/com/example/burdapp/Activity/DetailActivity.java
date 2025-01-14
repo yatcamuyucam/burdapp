@@ -153,7 +153,7 @@ public class DetailActivity extends BaseActivity {
 
         updateFavIcon();
 
-        String message = isFavorited ? "Added to favorites" : "Removed from favorites";
+        String message = isFavorited ? "✅ Added to your bookmarks!" : "❌ Removed from your bookmarks!";
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 

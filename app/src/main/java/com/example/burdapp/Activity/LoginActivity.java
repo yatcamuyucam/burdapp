@@ -42,18 +42,18 @@ public class LoginActivity extends AppCompatActivity {
                 String password = loginPassword.getText().toString().trim();
 
                 if (email.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(LoginActivity.this, "Please fill all fields!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "⚠\uFE0F Please fill all fields!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 // Firebase Authentication ile giriş yapma
                 auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "✅ Login successful! Welcome back! \uD83C\uDF89", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                     } else {
-                        Toast.makeText(LoginActivity.this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "❌ Login failed! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }

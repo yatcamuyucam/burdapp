@@ -70,9 +70,11 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="No favorites found"
+            android:layout_marginLeft="14dp"
+            android:layout_marginRight="14dp"
             android:textColor="@color/blue"
             android:textSize="18sp"
-            android:textStyle="bold|italic"
+            android:textStyle="bold"
             android:visibility="gone" />
     </FrameLayout>
 
@@ -98,10 +100,10 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Trips You Want to Remember"
+        android:text="🌍 Trips You Want to Remember "
         android:textColor="@color/darkBlue"
         android:textSize="16sp"
-        android:textStyle="italic|bold"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
         app:layout_constraintEnd_toEndOf="parent"

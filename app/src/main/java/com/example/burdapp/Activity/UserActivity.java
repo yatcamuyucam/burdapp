@@ -4,13 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.burdapp.Adapter.JoinAdapter;
 import com.example.burdapp.Domain.ItemDomain;
 import com.example.burdapp.Domain.User;
@@ -26,11 +26,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 import com.bumptech.glide.Glide;
 
-
 import java.util.ArrayList;
 
 public class UserActivity extends BaseActivity {
-    ActivityUserBinding binding;
+    private ActivityUserBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +39,7 @@ public class UserActivity extends BaseActivity {
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = auth.getCurrentUser();
+
         if (currentUser != null) {
             loadUserInfo(currentUser);
             loadUserProfileData(currentUser);
@@ -47,60 +48,60 @@ public class UserActivity extends BaseActivity {
             Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show();
         }
 
+        // Back button tıklama işlemi
+        binding.backBtn.setOnClickListener(v -> handleBackButton());
     }
 
-    public void loadUserInfo(FirebaseUser user) {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("users").child(currentUser.getUid());
+    private void loadUserInfo(FirebaseUser user) {
+        DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
 
-            userReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    User userName = snapshot.getValue(User.class);
-                    assert userName != null;
+        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    User userData = snapshot.getValue(User.class);
+                    if (userData != null) {
+                        String fullName = userData.getName();
+                        String gender = userData.getGender();
 
+                        binding.emailTxt.setText(user.getEmail());
+                        binding.nameTxt.setText(fullName);
 
-                    String fullName = userName.getName();
-                    String gender = userName.getGender();
+                        // Kullanıcıya özel benzersiz avatar URL'si oluşturma ve Firebase'de saklama
+                        String avatarUrl = generateAvatarUrl(userData);
 
-                    binding.emailTxt.setText(user.getEmail());
-                    binding.nameTxt.setText(fullName);
-
-                    DatabaseReference avatar = FirebaseDatabase.getInstance().getReference("avatar");
-                    avatar.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot avatarSnapshot) {
-                            if (avatarSnapshot.exists()) {
-                                User avatarData = avatarSnapshot.getValue(User.class);
-                                if (avatarData != null) {
-                                    String avatarUrl = gender.equals("male") ? avatarData.getMale() : avatarData.getFemale();
-
-                                    Glide.with(binding.getRoot().getContext())
-                                            .load(avatarUrl)
-                                            .into(binding.profileImage);
-                                } else {
-                                    Log.e("FirebaseError", "Avatar is null");
-                                }
-                            } else {
-                                Log.e("FirebaseError", "Avatar URL does not find");
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            Log.e("FirebaseError", "Avatar loading error: " + error.getMessage());
-                        }
-                    });
+                        // Glide ile avatar yükleme
+                        Glide.with(binding.getRoot().getContext())
+                                .load(avatarUrl)
+                                .placeholder(R.drawable.placeholder_avatar)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL) // Önbellek stratejisini etkinleştir
+                                .into(binding.profileImage);
+                    } else {
+                        Log.e("FirebaseError", "User data is null");
+                    }
+                } else {
+                    Log.e("FirebaseError", "User snapshot does not exist");
                 }
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.e("FirebaseError", "Error: " + error.getMessage());
-                }
-            });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("FirebaseError", "Error: " + error.getMessage());
+            }
+        });
+    }
+
+    private String generateAvatarUrl(User userData) {
+        String gender = userData.getGender();
+        String baseUrl = "https://avatar.iran.liara.run/public/";
+
+        // Erkek veya kadın avatarı için doğru URL oluşturma
+        String uniqueId = "?uid=" + userData.getName().hashCode(); // Benzersiz parametre
+
+        if ("male".equalsIgnoreCase(gender)) {
+            return baseUrl + "boy" + uniqueId;
         } else {
-            Log.e("FirebaseError", "Current user is null");
+            return baseUrl + "girl" + uniqueId;
         }
     }
 
@@ -125,43 +126,45 @@ public class UserActivity extends BaseActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("FirebaseError", "Error loading tickets: " + error.getMessage());
             }
         });
     }
 
     private void setupNavigationBar() {
         ChipNavigationBar chipNavigationBar = findViewById(R.id.chipNavigationBar);
-
         chipNavigationBar.setItemSelected(R.id.profile, true);
 
         chipNavigationBar.setOnItemSelectedListener(id -> {
             if (id == R.id.home) {
-                Intent homeIntent = new Intent(UserActivity.this, MainActivity.class);
-                homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(homeIntent);
-                finish();
+                navigateToActivity(MainActivity.class);
             } else if (id == R.id.explorer) {
-                Intent intent = new Intent(UserActivity.this, ExplorerActivity.class);
-                startActivity(intent);
-                finish();
-            }
-            else if (id == R.id.bookmark) {
-                Intent intent = new Intent(UserActivity.this, FavoritesActivity.class);
-                startActivity(intent);
-                finish();
+                navigateToActivity(ExplorerActivity.class);
+            } else if (id == R.id.bookmark) {
+                navigateToActivity(FavoritesActivity.class);
             }
         });
     }
 
+    private void navigateToActivity(Class<?> targetActivity) {
+        Intent intent = new Intent(UserActivity.this, targetActivity);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void handleBackButton() {
+        Intent intent = new Intent(UserActivity.this, MainActivity.class); // Ana ekrana dön
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
     public void onImageClick(View view) {
-        ImageView photoImageView = findViewById(R.id.photoImageView);
-        photoImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(UserActivity.this, SignupActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(UserActivity.this, SignupActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 }

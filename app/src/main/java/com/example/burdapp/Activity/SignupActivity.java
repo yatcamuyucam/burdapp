@@ -70,7 +70,7 @@ public class SignupActivity extends BaseActivity {
 
                 // Alanların boş olup olmadığını kontrol edin
                 if (name.isEmpty() || email.isEmpty() || password.isEmpty() || gender.isEmpty()) {
-                    Toast.makeText(SignupActivity.this, "Please fill all the fields!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignupActivity.this, "⚠\uFE0F Please fill all fields!", Toast.LENGTH_SHORT).show();
                     return; // Eğer alanlar boşsa işlemi durdur
                 }
 
@@ -90,18 +90,18 @@ public class SignupActivity extends BaseActivity {
                             HelperClass helperClass = new HelperClass(name, email, password, gender);
                             reference.child(userId).setValue(helperClass).addOnCompleteListener(dbTask -> {
                                 if (dbTask.isSuccessful()) {
-                                    Toast.makeText(SignupActivity.this, "You have signed up successfully!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SignupActivity.this, "\uD83C\uDF89 You have signed up successfully! Welcome aboard! \uD83D\uDE80", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                                     startActivity(intent);
                                 } else {
-                                    Toast.makeText(SignupActivity.this, "Sign up failed in database!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SignupActivity.this, "❌ Sign-up failed! Something went wrong with the database. Please try again later. \uD83D\uDE41", Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
                     } else {
                         // Kullanıcı oluşturma başarısızsa
-                        Toast.makeText(SignupActivity.this, "Sign up failed: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
-                        Log.e("SignupError", "Error: ", task.getException());
+                        Toast.makeText(SignupActivity.this, "❌ Sign-up failed! Something went wrong with the database. Please try again later. \uD83D\uDE41" + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.e("❌ Sign-up failed! Something went wrong with the database. Please try again later. \uD83D\uDE41", "Error: ", task.getException());
                     }
                 });
             }

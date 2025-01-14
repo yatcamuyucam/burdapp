@@ -116,7 +116,7 @@ public class FavoritesActivity extends BaseActivity {
 
     private void showEmptyState() {
         emptyMessage.setVisibility(View.VISIBLE);
-        emptyMessage.setText("You don't have any bookmarks yet. Start exploring and add travels to your bookmarks!");
+        emptyMessage.setText("\uD83D\uDCDA You haven't bookmarked any trips yet. \uD83C\uDF0D Start exploring and ❤\uFE0F add travels to your bookmarks! ✨");
         recyclerView.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
     }

@@ -38,14 +38,14 @@ public class SavedTicketActivity extends BaseActivity {
         binding.timeTxt.setText(object.getTimeTour());
         binding.tourGuideNameTxt.setText(object.getTourGuideName());
 
-        binding.callBtn.setOnClickListener(v -> {
+        binding.messageBtn.setOnClickListener(v -> {
             Intent sendIntent = new Intent(Intent.ACTION_VIEW);
             sendIntent.setData(Uri.parse("sms:" + object.getTourGuidePhone()));
-            sendIntent.putExtra("sms_body", "type your message");
+            sendIntent.putExtra("sms_body", "Type your message");
             startActivity(sendIntent);
         });
 
-        binding.messageBtn.setOnClickListener(v -> {
+        binding.callBtn.setOnClickListener(v -> {
             String phone = object.getTourGuidePhone();
             Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
             startActivity(intent);

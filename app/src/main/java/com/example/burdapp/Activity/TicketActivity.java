@@ -1,16 +1,11 @@
 package com.example.burdapp.Activity;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.burdapp.Domain.ItemDomain;
@@ -31,8 +26,12 @@ public class TicketActivity extends BaseActivity {
         setVariable();
 
         // "Add Your Profile" butonu için tıklama olayı
-        binding.button.setOnClickListener(v -> {
-            Toast.makeText(TicketActivity.this, "Added Succesfully!", Toast.LENGTH_SHORT).show();
+        binding.addProfileBtn.setOnClickListener(v -> {
+            Toast.makeText(TicketActivity.this, "\uD83C\uDFAB Your ticket has been added to your profile. Have a great journey! ✈\uFE0F✨", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(TicketActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
         });
     }
 
@@ -52,20 +51,18 @@ public class TicketActivity extends BaseActivity {
         binding.timeTxt.setText(object.getTimeTour());
         binding.tourGuideNameTxt.setText(object.getTourGuideName());
 
-        binding.callBtn.setOnClickListener(v -> {
+        binding.messageBtn.setOnClickListener(v -> {
             Intent sendIntent = new Intent(Intent.ACTION_VIEW);
             sendIntent.setData(Uri.parse("sms:" + object.getTourGuidePhone()));
-            sendIntent.putExtra("sms_body", "type your message");
+            sendIntent.putExtra("sms_body", "Type your message");
             startActivity(sendIntent);
         });
 
-        binding.messageBtn.setOnClickListener(v -> {
+        binding.callBtn.setOnClickListener(v -> {
             String phone = object.getTourGuidePhone();
             Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
             startActivity(intent);
         });
-
-
     }
 
     private void getIntentExtra() {
